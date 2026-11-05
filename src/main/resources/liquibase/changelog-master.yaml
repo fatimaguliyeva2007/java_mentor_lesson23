@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changes/22-10-2026-create-table-speakers.sql
+  - include:
+      file: liquibase/changes/22-10-2026-create-table-talks.sql

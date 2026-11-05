@@ -1,26 +1,35 @@
 package com.example.matrix_java_mentor_2.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@Schema(description = "Request model for creating or updating a speaker")
 public class SpeakerRequestDto {
-    @NotBlank(message = "Full name is required")
-    @Size(min = 2, max = 100, message = "Full name must be 2-100 characters")
+
+    @NotBlank
+    @Schema(
+            description = "Full name of the speaker",
+            example = "Fatima Guliyeva",
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
     private String fullName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email format is invalid")
-    @Size(max = 150, message = "Email must be at most 150 characters")
+    @Email
+    @NotBlank
+    @Schema(
+            description = "Email address of the speaker",
+            example = "fatima@gmail.com",
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
     private String email;
 
-    @Size(max = 100, message = "Company must be at most 100 characters")
+    @Schema(
+            description = "Company where the speaker works",
+            example = "Matrix",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+    )
     private String company;
 }
-//fullName, email, company

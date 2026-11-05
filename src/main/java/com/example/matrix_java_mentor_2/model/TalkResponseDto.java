@@ -1,25 +1,32 @@
 package com.example.matrix_java_mentor_2.model;
 
-import com.example.matrix_java_mentor_2.enums.TalkStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
+@Schema(description = "Talk response model")
 public class TalkResponseDto {
+
+    @Schema(description = "Unique talk ID", example = "1")
     private Long id;
+
+    @Schema(description = "Talk title", example = "Mastering Spring Boot 4")
     private String title;
+
+    @Schema(description = "Talk room", example = "Room A")
     private String room;
+
+    @Schema(description = "Talk duration in minutes", example = "60")
     private Integer durationMinutes;
-    private Long speakerId;
-    private String speakerName;
+
+    @Schema(description = "Scheduled date and time", example = "2026-10-25T10:00:00")
     private LocalDateTime scheduledAt;
-    private TalkStatus status;
+
+    @Schema(description = "Speaker ID", example = "1")
+    private Long speakerId;
+
+    @Schema(description = "Speaker name", example = "Fatima Guliyeva")
+    private String speakerName;
 }
-//id, title, room, durationMinutes, speakerId, speakerName

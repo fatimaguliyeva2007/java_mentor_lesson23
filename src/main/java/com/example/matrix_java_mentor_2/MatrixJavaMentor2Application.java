@@ -13,5 +13,3 @@ public class MatrixJavaMentor2Application {
     }
 
 }
-
-//obyekt nece jsona cevrilir ve harda
