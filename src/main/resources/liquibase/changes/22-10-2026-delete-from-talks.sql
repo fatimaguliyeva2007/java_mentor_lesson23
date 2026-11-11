@@ -1,0 +1,1 @@
+DELETE FROM talks WHERE speaker_id = 1;

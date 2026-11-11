@@ -13,24 +13,24 @@ import com.example.matrix_java_mentor_2.repository.TalkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SpeakerService{
+public class SpeakerService {
     private final SpeakerRepository speakerRepository;
     private final SpeakerMapper speakerMapper;
     private final TalkMapper talkMapper;
     private final TalkRepository talkRepository;
 
+    @Transactional
     public SpeakerResponseDto create(SpeakerRequestDto dto) {
         if (speakerRepository.existsByEmail(dto.getEmail())) {
             log.warn("Speaker with duplicate email was requested");
-            throw new DuplicateResourceException(
-                    "Speaker with this email already exists"
-            );
+            throw new DuplicateResourceException("Speaker with this email already exists");
         }
 
         SpeakerEntity speaker = speakerMapper.toEntity(dto);
@@ -40,22 +40,25 @@ public class SpeakerService{
         return speakerMapper.toDto(savedSpeaker);
     }
 
+    @Transactional(readOnly = true)
     public List<SpeakerResponseDto> findAll() {
         log.debug("Fetching all speakers");
         return speakerMapper.toDtoList(speakerRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public SpeakerResponseDto findById(Long id) {
         log.debug("Fetching speaker {}", id);
         SpeakerEntity speaker = speakerRepository.findById(id).orElseThrow(() ->
-                        new ResourceNotFoundException("Speaker with id " + id + " not found"));
+                new ResourceNotFoundException("Speaker with id " + id + " not found"));
         return speakerMapper.toDto(speaker);
     }
 
+    @Transactional(readOnly = true)
     public List<TalkResponseDto> findTalks(Long speakerId) {
         log.debug("Fetching talks for speaker {}", speakerId);
         speakerRepository.findById(speakerId).orElseThrow(() ->
-                        new ResourceNotFoundException("Speaker with id " + speakerId + " not found"));
+                new ResourceNotFoundException("Speaker with id " + speakerId + " not found"));
 
         return talkMapper.toDtoList(talkRepository.findBySpeakerId(speakerId));
     }

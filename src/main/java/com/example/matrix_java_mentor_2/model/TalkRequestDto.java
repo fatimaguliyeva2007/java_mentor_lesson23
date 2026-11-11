@@ -1,16 +1,10 @@
 package com.example.matrix_java_mentor_2.model;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
 public class TalkRequestDto {
 
@@ -27,12 +21,11 @@ public class TalkRequestDto {
     private Integer durationMinutes;
 
     @NotNull(message = "Speaker id is required")
-    @Positive(message = "Speaker id must be positive")
+    @Positive(message = "Speaker id must be a positive number")
     private Long speakerId;
 
     @NotNull(message = "Scheduled time is required")
     @Future(message = "Talk must be scheduled in the future")
     private LocalDateTime scheduledAt;
 }
-//title, room, durationMinutes, speakerId
 

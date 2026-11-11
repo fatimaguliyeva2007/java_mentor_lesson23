@@ -21,7 +21,9 @@ public class TalkEntity {
     private Long id;
     private String title;
     private String room;
+    @Column(name = "duration_minutes")
     private Integer durationMinutes;
+    @Column(name = "scheduled_at")
     private LocalDateTime scheduledAt;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -4,13 +4,14 @@ import com.example.matrix_java_mentor_2.entity.RoomTalkCount;
 import com.example.matrix_java_mentor_2.entity.TalkEntity;
 import com.example.matrix_java_mentor_2.enums.TalkStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface TalkRepository extends JpaRepository<TalkEntity, Long> {
+public interface TalkRepository extends JpaRepository<TalkEntity, Long>, JpaSpecificationExecutor<TalkEntity> {
     List<TalkEntity> findBySpeakerId(Long speakerId);
     long countBySpeakerId(Long speakerId);
     List<TalkEntity> findByStatus(TalkStatus status);
