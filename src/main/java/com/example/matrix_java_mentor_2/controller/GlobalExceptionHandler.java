@@ -1,13 +1,16 @@
+
 package com.example.matrix_java_mentor_2.controller;
 
 import com.example.matrix_java_mentor_2.exception.ApiError;
 import com.example.matrix_java_mentor_2.exception.BusinessRuleException;
 import com.example.matrix_java_mentor_2.exception.DuplicateResourceException;
+import com.example.matrix_java_mentor_2.exception.UserAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,11 +23,35 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BusinessRuleException.class)
-    public ResponseEntity<ApiError> handleBusinessRule(
-            BusinessRuleException ex, HttpServletRequest request) {
-        log.warn("Business rule violation: {}", ex.getMessage());
+    @ExceptionHandler({
+            UserAlreadyExistsException.class,
+            DuplicateResourceException.class
+    })
+    public ResponseEntity<ApiError> handleConflict(
+            Exception ex, HttpServletRequest request) {
+
+        return buildError(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            BusinessRuleException.class,
+            IllegalArgumentException.class,
+            IllegalStateException.class
+    })
+    public ResponseEntity<ApiError> handleBadRequest(
+            Exception ex, HttpServletRequest request) {
+
         return buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            UsernameNotFoundException.class,
+            jakarta.persistence.EntityNotFoundException.class
+    })
+    public ResponseEntity<ApiError> handleNotFound(
+            Exception ex, HttpServletRequest request) {
+
+        return buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -36,7 +63,6 @@ public class GlobalExceptionHandler {
                 .distinct()
                 .collect(Collectors.joining(", "));
 
-        log.warn("Validation failed: {}", message);
         return buildError(HttpStatus.BAD_REQUEST, message, request);
     }
 
@@ -49,7 +75,6 @@ public class GlobalExceptionHandler {
                 .distinct()
                 .collect(Collectors.joining(", "));
 
-        log.warn("Constraint violation: {}", message);
         return buildError(HttpStatus.BAD_REQUEST, message, request);
     }
 
@@ -64,22 +89,20 @@ public class GlobalExceptionHandler {
                 .distinct()
                 .collect(Collectors.joining(", "));
 
-        log.warn("Method validation failed: {}", message);
         return buildError(HttpStatus.BAD_REQUEST, message, request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleUnexpected(
             Exception ex, HttpServletRequest request) {
-        log.error("Unexpected error occurred", ex);
-        return buildError(HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred", request);
-    }
 
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ApiError> handleDuplicate(DuplicateResourceException ex, HttpServletRequest request) {
-        log.warn("Duplicate resource: {}", ex.getMessage());
-        return buildError(HttpStatus.CONFLICT, ex.getMessage(), request);
+        log.error("Unexpected error occurred", ex);
+
+        return buildError(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred",
+                request
+        );
     }
 
     private ResponseEntity<ApiError> buildError(
